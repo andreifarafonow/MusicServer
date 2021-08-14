@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+</head>
+
+<body id="bd">
+    <button onclick="document.getElementById('audioplayer').play();document.getElementById('audioplayer').pause();connect();">CONNECT</button>
+
+
+    <audio id="audioplayer" preload="auto">
+        <source src="~/beep.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        document.getElementById("bd").style.background = getRandomColor();
+
+        var socket;
+
+        function connect() {
+            socket = new WebSocket("ws://176.194.213.92:8181/");
+
+            setTimeout(() => {
+                socket.send("Привет");
+            }, 500);
+
+            
+
+            socket.onmessage = function (event) {
+                document.getElementById("bd").style.background = getRandomColor();
+                document.getElementById('audioplayer').play();
+                //alert(event.data);
+            };
+        }
+    </script>
+</body>
+
+</html>
