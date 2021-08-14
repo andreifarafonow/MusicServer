@@ -10,7 +10,7 @@ namespace MusicServer.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return View(new UserAudioData() { TrackName = $"{(new Random()).Next(1,3)}.mp3" });
         }
 
         public ActionResult About()

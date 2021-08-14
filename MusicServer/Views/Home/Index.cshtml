@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@model UserAudioData
+
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -10,38 +12,43 @@
 
 
     <audio id="audioplayer" preload="auto">
-        <source src="~/beep.mp3" type="audio/mpeg">
+        <source src=@("/" + Model.TrackName) type="audio/mpeg">
     </audio>
+
+    <p>@Model.TrackName</p>
 
     <script>
         function getRandomColor() {
-            var letters = '0123456789ABCDEF';
-            var color = '#';
-            for (var i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
+                var letters = '0123456789ABCDEF';
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
             }
-            return color;
-        }
 
-        document.getElementById("bd").style.background = getRandomColor();
+            document.getElementById("bd").style.background = getRandomColor();
 
-        var socket;
+            var socket;
 
-        function connect() {
-            socket = new WebSocket("ws://176.194.213.92:8181/");
+            function connect() {
+                socket = new WebSocket("ws://176.194.213.92:8181/");
 
-            setTimeout(() => {
-                socket.send("Привет");
-            }, 500);
+                setTimeout(() => {
+                    socket.send("Привет");
+                }, 500);
 
-            
 
-            socket.onmessage = function (event) {
-                document.getElementById("bd").style.background = getRandomColor();
-                document.getElementById('audioplayer').play();
+
+                socket.onmessage = function (event)
+                {
+                    document.getElementById("bd").style.background = getRandomColor();
+                    if (event.data == "P") {
+                        document.getElementById('audioplayer').play();
+                    }
                 //alert(event.data);
             };
-        }
+            }
     </script>
 </body>
 
