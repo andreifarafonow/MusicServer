@@ -34,9 +34,6 @@
             function connect() {
                 socket = new WebSocket("ws://176.194.213.92:8181/");
 
-                setTimeout(() => {
-                    socket.send("Привет");
-                }, 500);
 
 
 
@@ -45,6 +42,12 @@
                     document.getElementById("bd").style.background = getRandomColor();
                     if (event.data == "P") {
                         document.getElementById('audioplayer').play();
+                    }
+                    if (event.data == "S") {
+                        document.getElementById('audioplayer').currentTime = 0;
+                    }
+                    if (event.data == "PING") {
+                        socket.send("PONG");
                     }
                 //alert(event.data);
             };
