@@ -8,16 +8,21 @@
 </head>
 
 <body id="bd">
-    <button onclick="document.getElementById('audioplayer').play();document.getElementById('audioplayer').pause();connect();">CONNECT</button>
+    <button onclick="document.getElementById('audioplayer').play();document.getElementById('audioplayer').pause();connect();style.display='none'">CONNECT</button>
 
 
     <audio id="audioplayer" preload="auto">
-        <source src=@("/" + Model.TrackName) type="audio/mpeg">
+        <source type="audio/mpeg">
     </audio>
 
-    <p>@Model.TrackName</p>
+    <p id="trackShower"></p>
 
     <script>
+        var socketAdress = "ws://176.194.213.92:8181/";
+        var trackNumber = 0;
+
+        //let test = new WebSocket(socketAdress);
+
         function getRandomColor() {
                 var letters = '0123456789ABCDEF';
                 var color = '#';
@@ -32,9 +37,9 @@
             var socket;
 
             function connect() {
-                socket = new WebSocket("ws://176.194.213.92:8181/");
+                socket = new WebSocket(socketAdress);
 
-
+                
 
 
                 socket.onmessage = function (event)
@@ -43,11 +48,16 @@
                     if (event.data == "P") {
                         document.getElementById('audioplayer').play();
                     }
-                    if (event.data == "S") {
+                    else if (event.data == "S") {
                         document.getElementById('audioplayer').currentTime = 0;
                     }
-                    if (event.data == "PING") {
-                        socket.send("PONG");
+                    else if (event.data.startsWith('V=')) {
+                        document.getElementById('audioplayer').volume = Number.parseInt(event.data.slice(2)) / 100;
+                    }
+                    else if (event.data.startsWith('Track=')) {
+                        trackNumber = Number.parseInt(event.data.slice(6));
+                        document.getElementById('audioplayer').setAttribute("src", "/" + trackNumber + ".mp3");
+                        document.getElementById('trackShower').innerText = "/" + trackNumber + ".mp3";
                     }
                 //alert(event.data);
             };
